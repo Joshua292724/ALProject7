@@ -42,19 +42,15 @@ table 50127 ExampleHeader
         }
     }
     var
+        NoSeriesManagement: Codeunit "No. Series";
         ExampleSetup: Record "Example Setup";
-        NoSeriesManagement: Codeunit NoSeriesManagement;
 
     trigger OnInsert();
     begin
         if "No." = '' then begin
             ExampleSetup.Get();
             ExampleSetup.TestField("Document Nos.");
-            NoSeriesManagement.InitSeries(ExampleSetup."Document Nos.",
-                                        xRec."No. Series",
-                                        0D,
-                                        "No.",
-                                        "No. Series");
+            NoSeriesManagement.AreRelated(ExampleSetup."Example Nos.",xRec."No. Series");
         end;
         InitRecord();
     end; 
@@ -66,10 +62,12 @@ table 50127 ExampleHeader
         ExampleHeader := Rec;
         ExampleSetup.Get();
         ExampleSetup.TestField("Document Nos.");
-        if NoSeriesManagement.SelectSeries(ExampleSetup."Document Nos.",
-                                        OldExampleHeader."No. Series",
-                                        ExampleHeader."No. Series") then begin
-            NoSeriesManagement.SetSeries(ExampleHeader."No.");
+        // if NoSeriesManagement.SelectSeries(ExampleSetup."Document Nos.",
+        //                                 OldExampleHeader."No. Series",
+        //                                 ExampleHeader."No. Series") then begin
+        //     NoSeriesManagement.SetSeries(ExampleHeader."No.");
+            if NoSeriesManagement.LookupRelatedNoSeries(OldExampleHeader."No. Series",ExampleHeader."No. Series") then begin
+            NoSeriesManagement.GetNextNo(ExampleHeader."No.");
             Rec := ExampleHeader;
             exit(true);
         end;

@@ -16,19 +16,23 @@ page 50130 "Example Document List"
             {
                 field("No."; Rec."No.")
                 {
-                    ToolTip = 'Specifies the value of the No. field.';
+                    ApplicationArea = All;
+                    ToolTip = 'This is No..';
                 }
                 field("Document Date"; Rec."Document Date")
                 {
-                    ToolTip = 'Specifies the value of the Document Date field.';
+                    ApplicationArea = All;
+                    ToolTip = 'Thid is Doument Date.';
                 }
                 field("Posting Date"; Rec."Posting Date")
                 {
-                    ToolTip = 'Specifies the value of the Posting Date field.';
+                    ApplicationArea = All;
+                    ToolTip = 'This is Posting Date.';
                 }
                 field("No. Printed"; Rec."No. Printed")
                 {
-                    ToolTip = 'Specifies the value of the No. Printed field.';
+                    ApplicationArea = All;
+                    ToolTip = 'This is No.Printed.';
                 }
             }
         }
