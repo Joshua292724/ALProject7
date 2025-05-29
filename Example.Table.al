@@ -44,8 +44,10 @@ table 50125 Example
          if "No." = '' then begin
              ExampleSetup.Get();
              ExampleSetup.TestField("Example Nos.");
-//             NoSeriesManagement.InitSeries(ExampleSetup."Example Nos.",xRec."No. Series", 0D, "No.","No. Series");
-            NoSeriesManagement.AreRelated(ExampleSetup."Example Nos.", xRec."No. Series")
+            "No. Series" := ExampleSetup."Example Nos.";         
+            if NoSeries.AreRelated(ExampleSetup."Example Nos.", xRec."No. Series") then
+                "No. Series" := xRec."No. Series";
+            "No." := NoSeries.GetNextNo("No. Series");
          end;
      end;
 
@@ -56,15 +58,13 @@ table 50125 Example
          Example := Rec;
          ExampleSetup.Get();
          ExampleSetup.TestField("Example Nos.");
-//         if NoSeriesManagement.SetSeries(ExampleSetup."Example Nos.", OldExample."No. Series", Example."No. Series") then begin
-        if NoSeriesManagement.LookupRelatedNoSeries(OldExample."No. Series",Example."No. Series") then begin
-//             NoSeriesManagement.SetSeries(Example."No.");
-            NoSeriesManagement.GetNextNo(Example."No.");
+        if NoSeries.LookupRelatedNoSeries(ExampleSetup."Example Nos.", OldExample."No. Series", Example."No. Series") then begin
+            Example."No." := NoSeries.GetNextNo(Example."No. Series");
              Rec := Example;
              exit(true);
          end;
      end;
      var
-        NoSeriesManagement: Codeunit "No. Series";
+        NoSeries: Codeunit "No. Series";
         ExampleSetup: Record "Example Setup";
  }

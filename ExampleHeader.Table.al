@@ -3,7 +3,7 @@ table 50127 ExampleHeader
     DataClassification = CustomerContent;
     Caption = 'Example Header';
     LookupPageID = "Example Document List";
-    DrillDownPageID  = "Example Document List";
+    DrillDownPageID = "Example Document List";
     fields
     {
         field(1; "No."; Code[20])
@@ -42,7 +42,7 @@ table 50127 ExampleHeader
         }
     }
     var
-        NoSeriesManagement: Codeunit "No. Series";
+        NoSeries: Codeunit "No. Series";
         ExampleSetup: Record "Example Setup";
 
     trigger OnInsert();
@@ -50,10 +50,13 @@ table 50127 ExampleHeader
         if "No." = '' then begin
             ExampleSetup.Get();
             ExampleSetup.TestField("Document Nos.");
-            NoSeriesManagement.AreRelated(ExampleSetup."Example Nos.",xRec."No. Series");
+            "No. Series" := ExampleSetup."Document Nos.";
+            if NoSeries.AreRelated(ExampleSetup."Document Nos.", xRec."No. Series") then
+                "No. Series" := xRec."No. Series";
+            "No." := NoSeries.GetNextNo("No. Series");
         end;
         InitRecord();
-    end; 
+    end;
 
     procedure AssistEdit(OldExampleHeader: Record "ExampleHeader"): Boolean
     var
@@ -62,12 +65,8 @@ table 50127 ExampleHeader
         ExampleHeader := Rec;
         ExampleSetup.Get();
         ExampleSetup.TestField("Document Nos.");
-        // if NoSeriesManagement.SelectSeries(ExampleSetup."Document Nos.",
-        //                                 OldExampleHeader."No. Series",
-        //                                 ExampleHeader."No. Series") then begin
-        //     NoSeriesManagement.SetSeries(ExampleHeader."No.");
-            if NoSeriesManagement.LookupRelatedNoSeries(OldExampleHeader."No. Series",ExampleHeader."No. Series") then begin
-            NoSeriesManagement.GetNextNo(ExampleHeader."No.");
+        if NoSeries.LookupRelatedNoSeries(ExampleSetup."Document Nos.", OldExampleHeader."No. Series", ExampleHeader."No. Series") then begin
+            ExampleHeader."No." := NoSeries.GetNextNo(ExampleHeader."No. Series");
             Rec := ExampleHeader;
             exit(true);
         end;
